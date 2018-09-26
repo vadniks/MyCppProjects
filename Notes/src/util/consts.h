@@ -12,5 +12,6 @@
 #define MAIN_LIST_W         448
 #define MAIN_LIST_H         240
 #define MAIN_LIST_FONT_SIZE 14
+#define APP_ICON_PATH       ":/resources/notes.png"
 
 #endif //NOTES_CONSTS_H
