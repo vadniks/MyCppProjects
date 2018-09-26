@@ -18,9 +18,9 @@ private:
 
 public:
     explicit ListInteractions(QListWidget *list);
-
     ~ListInteractions();
 
+public:
     void addItem(const QListWidgetItem *item);
     void addItems(const vector<QListWidgetItem *> *items);
     void addItems(const QStringList stringList);

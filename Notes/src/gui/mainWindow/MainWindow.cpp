@@ -15,6 +15,7 @@ void MainWindow::Execute()
 
     auto *layout = new QVBoxLayout(center);
     layout->addWidget(makeList());
+    layout->addWidget(makeCreateBt());
 
     setCentralWidget(center);
     show();
@@ -54,4 +55,29 @@ QListWidget * MainWindow::makeList()
     list->show();
 
     return list;
+}
+
+QPushButton *MainWindow::makeCreateBt()
+{
+    auto *button = new QPushButton(this);
+    button->setText(MAIN_CREATE_BUTTON_TEXT);
+
+    QObject::connect(button, SIGNAL(clicked()), this, SLOT(onCreateClicked()));
+
+    return button;
+}
+
+void MainWindow::onCreateClicked()
+{
+
+}
+
+void MainWindow::updateList()
+{
+
+}
+
+void MainWindow::addToList(QListWidgetItem *item)
+{
+
 }

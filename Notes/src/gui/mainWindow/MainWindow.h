@@ -15,13 +15,18 @@ public:
     MainWindow();
     ~MainWindow() override;
 
+public:
     void Execute();
+    void updateList();
+    void addToList(QListWidgetItem * item); //TODO: add writing to SQL in this function.
 
 public slots:
     void onItemClicked(QListWidgetItem *item);
+    void onCreateClicked();
 
 private:
     QListWidget * makeList();
+    QPushButton * makeCreateBt();
 };
 
 
