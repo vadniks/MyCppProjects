@@ -2,7 +2,7 @@
  **  Created by Vad Nik on 24-Sep-18.
  *************************************************/
 
-#ifndef NOTES_MAINWINDOW_H
+#ifndef NOTES_MAINWINDOW_H //TODO: unterminated conditional directive.
 #define NOTES_MAINWINDOW_H
 
 #include <QMainWindow>
@@ -29,7 +29,7 @@ public:
 
 public:
     void Execute();
-    void addToList(QListWidgetItem * item); //TODO: add writing to SQL in this function.
+    void addToList(QString title, QString text); //TODO: add writing to SQL in this function.
 
     [[deprecated("useless, directly add-remove operations do the trick")]]
     void updateList();

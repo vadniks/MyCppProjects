@@ -77,7 +77,7 @@ void CreateWindow::onDoneClicked()
     }
 
     try {
-        ((MainWindow *) parent)->addToList(createItem(titleT->text(), textT->toPlainText()));
+        ((MainWindow *) parent)->addToList(titleT->text(), textT->toPlainText());
     } catch (IllegalStateException &e) {
         showAlert(ALERT_WIN_TITLE_WARNING, ALERT_ALRD_EXISTS);
         return;

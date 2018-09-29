@@ -2,7 +2,7 @@
  **  Created by Vad Nik on 26-Sep-18.
  *************************************************/
 
-#ifndef NOTES_CREATEWINDOW_H
+#ifndef NOTES_CREATEWINDOW_H //TODO: unterminated conditional directive.
 #define NOTES_CREATEWINDOW_H
 
 #include <QMainWindow>

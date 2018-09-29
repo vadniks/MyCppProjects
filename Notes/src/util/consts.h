@@ -33,5 +33,8 @@
 #define CREATE_CANCEL_BUTTON_TEXT "Cancel"
 #define CREATE_TITLE_HINT         "Title"
 #define CREATE_TEXT_HINT          "Text"
+#define CREATE_ID_NAME            "id"
+#define CREATE_TITLE_NAME         "title"
+#define CREATE_TEXT_NAME          "text"
 
 #endif //NOTES_CONSTS_H

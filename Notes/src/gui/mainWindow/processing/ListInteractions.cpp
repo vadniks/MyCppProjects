@@ -11,12 +11,14 @@ ListInteractions::ListInteractions(QListWidget *_list)
     ListInteractions::list = _list;
 }
 
-void ListInteractions::addItem(QListWidgetItem *item)
+void ListInteractions::addItem(QString title, QString text)
 {
-    if (doubles(getItemTitle(item)))
+    if (doubles(title))
         throw IllegalStateException();
 
-    item->setWhatsThis(QString::number(getItemCount()));
+    auto *item = new QListWidgetItem(title, list);
+    putData(getItemCount()-1, &title, &text, item);
+    //item->setWhatsThis(QString::number(getItemCount()));
     list->addItem(item);
 }
 
@@ -32,8 +34,7 @@ void ListInteractions::addItems(QStringList stringList)
     {
         QListWidgetItem *ptr = nullptr;
         ptr = new QListWidgetItem(s, this->list);
-
-        ptr->setWhatsThis(QString::number(i));
+        putData(i, &s, &QString::asprintf("<none>"), ptr);
         i++;
     }
 }
@@ -60,14 +61,14 @@ bool ListInteractions::isEmpty()
 
 int ListInteractions::getItemIndex(QListWidgetItem &item)
 {
-    QString index = item.whatsThis();
-    bool successful;
-    int idx = index.toInt(&successful);
+//    QString index = item.whatsThis();
+//    bool successful;
+//    int idx = index.toInt(&successful);
+//
+//    if (successful)
+//        return idx;
 
-    if (successful)
-        return idx;
-
-    return 0;
+    return getData(&item).getId();
 }
 
 QListWidget *ListInteractions::getList()
@@ -77,7 +78,7 @@ QListWidget *ListInteractions::getList()
 
 QString ListInteractions::getItemTitle(QListWidgetItem *item)
 {
-    return item->text();
+    return *getData(item).getTitle();
 }
 
 int ListInteractions::getItemCount()
@@ -96,6 +97,46 @@ bool ListInteractions::doubles(QString title)
     }
 
     return false;
+}
+
+void ListInteractions::putData(int id, QString *title, QString *text, QListWidgetItem *item)
+{
+//    QTextStream out(stdout);
+//    out << id << " " << *title << " " << *text << endl;
+
+    QJsonObject obj;
+    obj[CREATE_ID_NAME] = id;
+    obj[CREATE_TITLE_NAME] = *title;
+    obj[CREATE_TEXT_NAME] = *text;
+
+    QJsonDocument doc(obj);
+
+//    ListItem i(id, *title, *text);
+//    QVariant data(*i.toDataStream());
+    auto *data = new QVariant(QVariant::Type::ByteArray);
+    data->setValue<QByteArray>(doc.toJson());
+
+//    if (data.canConvert<ListItem>()) {
+//        data.setValue<ListItem>(i);
+        item->setData(Qt::UserRole, *data);
+//    }
+}
+
+ListItem ListInteractions::getData(QListWidgetItem *item)
+{
+    //return &ListItem::fromDataStream((QDataStream) item->data(Qt::UserRole).value());
+    //return item->data(Qt::UserRole).value<ListItem>();
+
+    QJsonObject obj = QJsonDocument::fromJson(item->data(Qt::UserRole).value<QByteArray>()).object();
+
+    int id = obj[CREATE_ID_NAME].toInt(0);
+    QString title = obj[CREATE_TITLE_NAME].toString();
+    QString text = obj[CREATE_TEXT_NAME].toString();
+
+//    QTextStream out(stdout);
+//    out << item->text() << " " << id << " " << title << " " << text << obj.isEmpty() << endl;
+
+    return ListItem(id, title, text);
 }
 
 ListInteractions::~ListInteractions() = default;

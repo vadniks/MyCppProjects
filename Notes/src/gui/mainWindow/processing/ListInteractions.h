@@ -6,11 +6,17 @@
 #define NOTES_LISTITERACTIONS_H
 
 #include <QListWidget>
-#include <QListWidgetItem>
 #include <vector>
 #include <QStringList>
+#include <QVariant>
+#include <QDataStream>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QByteArray>
+#include <QTextStream>
 #include "../../../util/consts.h"
 #include "../../../util/IllegalStateException.h"
+#include "../../../util/ListItem.h"
 
 using namespace std;
 
@@ -26,9 +32,8 @@ public:
     ~ListInteractions();
 
 public:
-    void addItem(QListWidgetItem *item);
+    void addItem(QString title, QString text);
     void addItems(vector<QListWidgetItem *> *items);
-    void addItems(QStringList stringList);
     int getItemIndex(QListWidgetItem &item);
     QListWidgetItem * getItem(int index);
     void removeItem(int index);
@@ -38,6 +43,11 @@ public:
     QString getItemTitle(QListWidgetItem *item);
     int getItemCount();
     bool doubles(QString title);
+    void putData(int id, QString *title, QString *text, QListWidgetItem *item);
+    ListItem getData(QListWidgetItem *item);
+
+    [[deprecated("only for testing")]]
+    void addItems(QStringList stringList);
 };
 
 

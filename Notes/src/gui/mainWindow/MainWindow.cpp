@@ -1,3 +1,7 @@
+#include <utility>
+
+#include <utility>
+
 /*************************************************
  **  Created by Vad Nik on 24-Sep-18.
  *************************************************/
@@ -27,7 +31,7 @@ void MainWindow::onItemClicked(QListWidgetItem *item)
     //TODO: test.
     QMessageBox msg(this);
     msg.setWindowTitle(QString::number(index));
-    msg.setText(item->text());
+    msg.setText(item->text() + " " + inters->getItemTitle(item) + " " + QString::number(inters->getItemCount()));
     msg.exec();
 }
 
@@ -80,7 +84,7 @@ void MainWindow::updateList()
 
 }
 
-void MainWindow::addToList(QListWidgetItem *item)
+void MainWindow::addToList(QString title, QString text)
 {
-    inters->addItem(item);
+    inters->addItem(std::move(title), std::move(text));
 }
