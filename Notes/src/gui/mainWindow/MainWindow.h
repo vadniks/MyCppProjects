@@ -5,11 +5,23 @@
 #ifndef NOTES_MAINWINDOW_H
 #define NOTES_MAINWINDOW_H
 
-#include "include.h"
+#include <QMainWindow>
+#include <QListWidget>
+#include <QListWidgetItem>
+#include <QStringList>
+#include <QVBoxLayout>
+#include <QMessageBox>
+#include <QPushButton>
+#include "processing/ListInteractions.h"
+#include "../../util/consts.h"
+#include "../createWindow/CreateWindow.h"
 
 class MainWindow: public QMainWindow
 {
     Q_OBJECT
+
+private:
+    ListInteractions *inters;
 
 public:
     MainWindow();
@@ -17,8 +29,10 @@ public:
 
 public:
     void Execute();
-    void updateList();
     void addToList(QListWidgetItem * item); //TODO: add writing to SQL in this function.
+
+    [[deprecated("useless, directly add-remove operations do the trick")]]
+    void updateList();
 
 public slots:
     void onItemClicked(QListWidgetItem *item);

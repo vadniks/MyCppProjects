@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     QApplication::setWindowIcon(QIcon(APP_ICON_PATH));
 
     MainWindow window;
-    window.resize(MAIN_WIN_W, MAIN_WIN_H);
+    window.resize(DEF_WIN_W, DEF_WIN_H);
     window.setWindowTitle(MAIN_WIN_TITLE);
     window.Execute();
 

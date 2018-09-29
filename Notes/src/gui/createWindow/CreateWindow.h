@@ -5,35 +5,45 @@
 #ifndef NOTES_CREATEWINDOW_H
 #define NOTES_CREATEWINDOW_H
 
-#include "include.h"
+#include <QMainWindow>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QObject>
+#include <QListWidgetItem>
+#include <QString>
 #include <QLineEdit>
-#include <QTextEdit>
-
-typedef QWidget* QWidgetPtr;
+#include <QPlainTextEdit>
+#include <QMessageBox>
+#include "../mainWindow/MainWindow.h"
+#include "../../util/consts.h"
+#include "../../util/IllegalStateException.h"
 
 class CreateWindow: public QMainWindow
 {
     Q_OBJECT
 
+private:
+    QMainWindow *parent;
+    QWidget *center;
+    QLineEdit *titleT;
+    QPlainTextEdit *textT;
+
 public:
     explicit CreateWindow(QMainWindow *parent);
     ~CreateWindow() override;
 
-public:
-    static QWidgetPtr toQWidgetPtr(QWidget *w);
-
 public slots:
     void onDoneClicked();
     void onCancelClicked();
-    void onTitleChanged(QLineEdit *title);
-    void onTextChanged(QTextEdit *text);
 
 private:
-    template<typename ...QWidgetPtr>
-    QVBoxLayout * makeMainLayout(QWidgetPtr... children);
+    QVBoxLayout * makeMainLayout(QLayout *textBar, QLayout *buttonBar);
     QHBoxLayout * makeButtonBar();
     QVBoxLayout * makeTextBar();
-    QListWidgetItem * createItem(QString *title, QString *text);
+    QListWidgetItem * createItem(const QString &title, const QString &text);
+    void showAlert(const QString &title, const QString &msg);
 };
 
 

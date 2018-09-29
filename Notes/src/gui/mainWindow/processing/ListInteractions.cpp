@@ -2,7 +2,6 @@
  **  Created by Vad Nik on 24-Sep-18.
  *************************************************/
 
-#include "include.h"
 #include "ListInteractions.h"
 
 using namespace std;
@@ -12,17 +11,21 @@ ListInteractions::ListInteractions(QListWidget *_list)
     ListInteractions::list = _list;
 }
 
-void ListInteractions::addItem(const QListWidgetItem *item)
+void ListInteractions::addItem(QListWidgetItem *item)
+{
+    if (doubles(getItemTitle(item)))
+        throw IllegalStateException();
+
+    item->setWhatsThis(QString::number(getItemCount()));
+    list->addItem(item);
+}
+
+void ListInteractions::addItems(vector<QListWidgetItem *> *items)
 {
 
 }
 
-void ListInteractions::addItems(const vector<QListWidgetItem *> *items)
-{
-
-}
-
-void ListInteractions::addItems(const QStringList stringList)
+void ListInteractions::addItems(QStringList stringList)
 {
     int i = 0;
     foreach(QString s, stringList)
@@ -35,12 +38,12 @@ void ListInteractions::addItems(const QStringList stringList)
     }
 }
 
-QListWidgetItem * ListInteractions::getIttem(const int index)
+QListWidgetItem * ListInteractions::getItem(int index)
 {
-    return nullptr;
+    return list->item(index);
 }
 
-void ListInteractions::removeItem(const int index)
+void ListInteractions::removeItem(int index)
 {
 
 }
@@ -52,7 +55,7 @@ void ListInteractions::deleteAll()
 
 bool ListInteractions::isEmpty()
 {
-    return false;
+    return !getItemCount();
 }
 
 int ListInteractions::getItemIndex(QListWidgetItem &item)
@@ -70,6 +73,29 @@ int ListInteractions::getItemIndex(QListWidgetItem &item)
 QListWidget *ListInteractions::getList()
 {
     return this->list;
+}
+
+QString ListInteractions::getItemTitle(QListWidgetItem *item)
+{
+    return item->text();
+}
+
+int ListInteractions::getItemCount()
+{
+    return list->count();
+}
+
+bool ListInteractions::doubles(QString title)
+{
+//    QString t = *title;
+//    QString &ti = t;
+
+    for (int i = 0; i < getItemCount(); i++) {
+        if (QString::compare(getItemTitle(getItem(i)), title, Qt::CaseInsensitive) == 0)
+            return true;
+    }
+
+    return false;
 }
 
 ListInteractions::~ListInteractions() = default;

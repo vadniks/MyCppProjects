@@ -5,7 +5,12 @@
 #ifndef NOTES_LISTITERACTIONS_H
 #define NOTES_LISTITERACTIONS_H
 
-#include "include.h"
+#include <QListWidget>
+#include <QListWidgetItem>
+#include <vector>
+#include <QStringList>
+#include "../../../util/consts.h"
+#include "../../../util/IllegalStateException.h"
 
 using namespace std;
 
@@ -21,15 +26,18 @@ public:
     ~ListInteractions();
 
 public:
-    void addItem(const QListWidgetItem *item);
-    void addItems(const vector<QListWidgetItem *> *items);
-    void addItems(const QStringList stringList);
-    static int getItemIndex(QListWidgetItem &item);
-    QListWidgetItem * getIttem(int index);
+    void addItem(QListWidgetItem *item);
+    void addItems(vector<QListWidgetItem *> *items);
+    void addItems(QStringList stringList);
+    int getItemIndex(QListWidgetItem &item);
+    QListWidgetItem * getItem(int index);
     void removeItem(int index);
     void deleteAll();
     bool isEmpty();
     QListWidget * getList();
+    QString getItemTitle(QListWidgetItem *item);
+    int getItemCount();
+    bool doubles(QString title);
 };
 
 

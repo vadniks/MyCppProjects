@@ -2,7 +2,6 @@
  **  Created by Vad Nik on 24-Sep-18.
  *************************************************/
 
-#include "include.h"
 #include "MainWindow.h"
 
 MainWindow::MainWindow() = default;
@@ -23,7 +22,7 @@ void MainWindow::Execute()
 
 void MainWindow::onItemClicked(QListWidgetItem *item)
 {
-    int index = ListInteractions::getItemIndex(*item);
+    int index = inters->getItemIndex(*item);
 
     //TODO: test.
     QMessageBox msg(this);
@@ -39,7 +38,7 @@ QListWidget * MainWindow::makeList()
     list->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
 
     QFont font = list->font();
-    font.setPointSize(MAIN_LIST_FONT_SIZE);
+    font.setPointSize(DEF_FONT_SIZE);
 
     list->setFont(font);
 
@@ -49,6 +48,7 @@ QListWidget * MainWindow::makeList()
 
     auto *inters = new ListInteractions(list);
     inters->addItems(sList);
+    this->inters = inters;
 
     QObject::connect(list, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(onItemClicked(QListWidgetItem *)));
 
@@ -69,7 +69,10 @@ QPushButton *MainWindow::makeCreateBt()
 
 void MainWindow::onCreateClicked()
 {
-
+    auto *crWin = new CreateWindow(this);
+    crWin->resize(DEF_WIN_W, DEF_WIN_H);
+    crWin->setWindowTitle(CREATE_WIN_TITLE);
+    crWin->show();
 }
 
 void MainWindow::updateList()
@@ -79,5 +82,5 @@ void MainWindow::updateList()
 
 void MainWindow::addToList(QListWidgetItem *item)
 {
-
+    inters->addItem(item);
 }

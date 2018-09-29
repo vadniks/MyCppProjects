@@ -2,22 +2,28 @@
  **  Created by Vad Nik on 26-Sep-18.
  *************************************************/
 
-//#include "include.h" //TODO: remove all includings like this from all classes' sources.
 #include "CreateWindow.h"
 
-CreateWindow::CreateWindow(QMainWindow *parent)
+CreateWindow::CreateWindow(QMainWindow *parent) : QMainWindow(parent)
 {
-    setParent(parent);
-
     QWidget *center = new QWidget(this);
+    this->center = center;
+
+    makeMainLayout(makeTextBar(), makeButtonBar());
+
+    setCentralWidget(center);
+    setWindowModality(Qt::WindowModality::WindowModal);
+
+    this->parent = parent;
 }
 
-template<typename... QWidgetPtr>
-QVBoxLayout *CreateWindow::makeMainLayout(QWidgetPtr... children)
+QVBoxLayout *CreateWindow::makeMainLayout(QLayout *textBar, QLayout *buttonBar)
 {
+    auto *root = new QVBoxLayout(center);
+    root->addItem(textBar);
+    root->addItem(buttonBar);
 
-
-    return nullptr;
+    return root;
 }
 
 QHBoxLayout *CreateWindow::makeButtonBar()
@@ -28,28 +34,56 @@ QHBoxLayout *CreateWindow::makeButtonBar()
     QObject::connect(btDone, SIGNAL(clicked()), this, SLOT(onDoneClicked()));
     QObject::connect(btCreate, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
 
-    return nullptr;
+    auto *layout = new QHBoxLayout();
+    layout->addWidget(btDone);
+    layout->addWidget(btCreate);
+
+    return layout;
 }
 
 QVBoxLayout *CreateWindow::makeTextBar()
 {
     auto *titleT = new QLineEdit(this);
     titleT->setPlaceholderText(CREATE_TITLE_HINT);
-    //titleT->setReadOnly(true);
 
-    //QObject::connect(titleT, SIGNAL())
+    QFont font = titleT->font();
+    font.setPointSize(DEF_FONT_SIZE);
 
-    return nullptr;
-}
+    titleT->setFont(font);
+    this->titleT = titleT;
 
-QWidgetPtr CreateWindow::toQWidgetPtr(QWidget * w)
-{
-    return w;
+    auto *textT = new QPlainTextEdit(this);
+    textT->setPlaceholderText(CREATE_TEXT_HINT);
+    //textT->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+
+    QFont font2 = textT->font();
+    font2.setPointSize(DEF_FONT_SIZE);
+
+    textT->setFont(font);
+    this->textT = textT;
+
+    auto *layout = new QVBoxLayout();
+    layout->addWidget(titleT);
+    layout->addWidget(textT);
+
+    return layout;
 }
 
 void CreateWindow::onDoneClicked()
 {
-    //((MainWindow *) parentWidget())->addToList(createItem());
+    if (titleT->text().length() == 0 || textT->toPlainText().length() == 0) {
+        showAlert(ALERT_WIN_TITLE_WARNING, ALERT_TEXT_EMPTY);
+        return;
+    }
+
+    try {
+        ((MainWindow *) parent)->addToList(createItem(titleT->text(), textT->toPlainText()));
+    } catch (IllegalStateException &e) {
+        showAlert(ALERT_WIN_TITLE_WARNING, ALERT_ALRD_EXISTS);
+        return;
+    }
+
+    close();
 }
 
 void CreateWindow::onCancelClicked()
@@ -57,20 +91,18 @@ void CreateWindow::onCancelClicked()
     this->close();
 }
 
-QListWidgetItem *CreateWindow::createItem(QString *title, QString *text)
+QListWidgetItem *CreateWindow::createItem(const QString &title, const QString &text)
 {
     auto *item = new QListWidgetItem(title + QString(" : ") + text);
     return item;
 }
 
-void CreateWindow::onTitleChanged(QLineEdit *title)
+void CreateWindow::showAlert(const QString &title, const QString &msg)
 {
-
-}
-
-void CreateWindow::onTextChanged(QTextEdit *text)
-{
-
+    QMessageBox mBox(this);
+    mBox.setWindowTitle(title);
+    mBox.setText(msg);
+    mBox.exec();
 }
 
 CreateWindow::~CreateWindow() = default;
