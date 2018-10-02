@@ -46,12 +46,14 @@ QListWidgetItem * ListInteractions::getItem(int index)
 
 void ListInteractions::removeItem(int index)
 {
-
+    //list->removeItemWidget(getItem(index));
+    delete getItem(index);
 }
 
 void ListInteractions::deleteAll()
 {
-
+    for (int i = 0; i < getItemCount(); i++)
+        removeItem(i);
 }
 
 bool ListInteractions::isEmpty()
@@ -137,6 +139,16 @@ ListItem ListInteractions::getData(QListWidgetItem *item)
 //    out << item->text() << " " << id << " " << title << " " << text << obj.isEmpty() << endl;
 
     return ListItem(id, title, text);
+}
+
+void ListInteractions::edit(ListItem prev, ListItem nw)
+{
+//    if (doubles(*nw.getTitle()))
+//        throw IllegalStateException(); //TODO: isn't necessary.
+
+    QListWidgetItem *item = getItem(prev.getId());
+    item->setText(*nw.getTitle());
+    putData(prev.getId(), nw.getTitle(), nw.getText(), item);
 }
 
 ListInteractions::~ListInteractions() = default;

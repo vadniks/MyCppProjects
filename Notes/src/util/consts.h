@@ -17,6 +17,9 @@
 #define ALERT_WIN_TITLE_WARNING   "Warning!"
 #define ALERT_TEXT_EMPTY          "One of the text fields is empty!"
 #define ALERT_ALRD_EXISTS         "This note already exists!"
+#define ALERT_TEXT_CHANGED        "One of the texts has been changed.\nDo you want to save changes?"
+#define ALERT_BUTTON_OK           "OK"
+#define ALERT_BUTTON_CANCEL       "Cancel"
 
 //Exceptions:
 #define ILLEGAL_STATE_EXCEPTION   "IllegalStateException"
@@ -30,11 +33,19 @@
 //Create window:
 #define CREATE_WIN_TITLE          MAIN_CREATE_BUTTON_TEXT
 #define CREATE_DONE_BUTTON_TEXT   "Done"
-#define CREATE_CANCEL_BUTTON_TEXT "Cancel"
+#define CREATE_CANCEL_BUTTON_TEXT ALERT_BUTTON_CANCEL
 #define CREATE_TITLE_HINT         "Title"
 #define CREATE_TEXT_HINT          "Text"
 #define CREATE_ID_NAME            "id"
 #define CREATE_TITLE_NAME         "title"
 #define CREATE_TEXT_NAME          "text"
+
+//ViewWindow:
+#define VIEW_WIN_TITLE            "Edit"
+#define VIEW_EDIT_BUTTON_TEXT     VIEW_WIN_TITLE
+#define VIEW_CANCEL_BUTTON_TEXT   CREATE_CANCEL_BUTTON_TEXT
+#define VIEW_DELETE_BUTTON_TEXT   "Delete"
+#define VIEW_TITLE_HINT           CREATE_TITLE_HINT
+#define VIEW_TEXT_HINT            CREATE_TEXT_HINT
 
 #endif //NOTES_CONSTS_H

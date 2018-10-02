@@ -12,9 +12,11 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
+#include <utility>
 #include "processing/ListInteractions.h"
 #include "../../util/consts.h"
 #include "../createWindow/CreateWindow.h"
+#include "../viewWindow/ViewWindow.h"
 
 class MainWindow: public QMainWindow
 {
@@ -30,6 +32,8 @@ public:
 public:
     void Execute();
     void addToList(QString title, QString text); //TODO: add writing to SQL in this function.
+    void edit(ListItem prev, ListItem nw);
+    void deleteItem(int index);
 
     [[deprecated("useless, directly add-remove operations do the trick")]]
     void updateList();

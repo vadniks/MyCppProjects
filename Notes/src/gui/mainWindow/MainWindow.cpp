@@ -1,7 +1,3 @@
-#include <utility>
-
-#include <utility>
-
 /*************************************************
  **  Created by Vad Nik on 24-Sep-18.
  *************************************************/
@@ -26,14 +22,21 @@ void MainWindow::Execute()
 
 void MainWindow::onItemClicked(QListWidgetItem *item)
 {
-    int index = inters->getItemIndex(*item);
+//    int index = inters->getItemIndex(*item);
+//
+//    //TODO: test.
+//    QMessageBox msg(this);
+//    msg.setWindowTitle(QString::number(index));
+//    msg.setText(item->text() + " " + inters->getItemTitle(item) + " " + QString::number(inters->getItemCount()));
+//    msg.exec();
 
-    //TODO: test.
-    QMessageBox msg(this);
-    msg.setWindowTitle(QString::number(index));
-    msg.setText(item->text() + " " + inters->getItemTitle(item) + " " + QString::number(inters->getItemCount()));
-    msg.exec();
+    auto *vwWin = new ViewWindow(this, inters->getData(item));
+    vwWin->resize(DEF_WIN_W, DEF_WIN_H);
+    vwWin->setWindowTitle(VIEW_WIN_TITLE);
+    vwWin->show();
 }
+
+//TODO: add menu.
 
 QListWidget * MainWindow::makeList()
 {
@@ -87,4 +90,14 @@ void MainWindow::updateList()
 void MainWindow::addToList(QString title, QString text)
 {
     inters->addItem(std::move(title), std::move(text));
+}
+
+void MainWindow::edit(ListItem prev, ListItem nw)
+{
+    inters->edit(prev, nw);
+}
+
+void MainWindow::deleteItem(int index)
+{
+    inters->removeItem(index);
 }

@@ -45,6 +45,7 @@ public:
     bool doubles(QString title);
     void putData(int id, QString *title, QString *text, QListWidgetItem *item);
     ListItem getData(QListWidgetItem *item);
+    void edit(ListItem prev, ListItem nw);
 
     [[deprecated("only for testing")]]
     void addItems(QStringList stringList);
