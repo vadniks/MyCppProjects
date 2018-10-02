@@ -15,8 +15,10 @@ public:
     explicit ListItem(int id = 0, QString title = nullptr, QString text = nullptr);
     ~ListItem();
 
-public:
+    [[deprecated("unsafe")]]
     int getId();
+
+public:
     QString * getTitle();
     QString * getText();
     void setId(int id);

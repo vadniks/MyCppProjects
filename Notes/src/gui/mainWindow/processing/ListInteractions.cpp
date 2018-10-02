@@ -47,7 +47,13 @@ QListWidgetItem * ListInteractions::getItem(int index)
 void ListInteractions::removeItem(int index)
 {
     //list->removeItemWidget(getItem(index));
+
+//    QTextStream out(stdout);
+//    out << QString::number(index) << " " << QString::number(getItemCount()) << endl;
+
     delete getItem(index);
+
+    updateItems();
 }
 
 void ListInteractions::deleteAll()
@@ -149,6 +155,23 @@ void ListInteractions::edit(ListItem prev, ListItem nw)
     QListWidgetItem *item = getItem(prev.getId());
     item->setText(*nw.getTitle());
     putData(prev.getId(), nw.getTitle(), nw.getText(), item);
+}
+
+int ListInteractions::getItemIndex(QString *title)
+{
+    for (int i = 0; i < getItemCount(); i++) {
+        if (QString::compare(getItem(i)->text(), *title))
+            return i;
+    }
+    return 0;
+}
+
+void ListInteractions::updateItems()
+{
+    for (int i = 0; i < getItemCount(); i++) {
+        QListWidgetItem *item = getItem(i);
+        putData(getItemIndex(&item->text()), &item->text(), getData(item).getText(), item);
+    }
 }
 
 ListInteractions::~ListInteractions() = default;
