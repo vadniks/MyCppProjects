@@ -33,7 +33,7 @@ public:
 
 public:
     void addItem(QString title, QString text);
-    void addItems(vector<QListWidgetItem *> *items);
+    void addItems(vector<ListItem> items);
     int getItemIndex(QListWidgetItem &item);
     QListWidgetItem * getItem(int index);
     void removeItem(int index);
@@ -49,6 +49,7 @@ public:
     int getItemIndex(QString *title);
     void updateItems();
 
+    //TODO: delete.
     [[deprecated("only for testing")]]
     void addItems(QStringList stringList);
 };

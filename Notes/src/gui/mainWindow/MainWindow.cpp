@@ -50,11 +50,11 @@ QListWidget * MainWindow::makeList()
     list->setFont(font);
 
     //TODO: add SQL reading and loading from to list.
-    QStringList sList;
-    sList << "Item 1" << "Item 2";
+//    QStringList sList;
+//    sList << "Item 1" << "Item 2";
 
     auto *inters = new ListInteractions(list);
-    inters->addItems(sList);
+    inters->addItems(SQLInteractions().loadItems());
     this->inters = inters;
 
     QObject::connect(list, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(onItemClicked(QListWidgetItem *)));
@@ -100,4 +100,14 @@ void MainWindow::edit(ListItem prev, ListItem nw)
 void MainWindow::deleteItem(int index)
 {
     inters->removeItem(index);
+}
+
+void MainWindow::loadItems()
+{
+
+}
+
+int MainWindow::getId(QString title)
+{
+    return inters->getItemIndex(&title);
 }

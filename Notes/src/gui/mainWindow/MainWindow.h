@@ -13,10 +13,14 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <utility>
+#include <vector>
 #include "processing/ListInteractions.h"
 #include "../../util/consts.h"
 #include "../createWindow/CreateWindow.h"
 #include "../viewWindow/ViewWindow.h"
+#include "../../processing/SQLInteractions.h"
+
+using namespace std;
 
 class MainWindow: public QMainWindow
 {
@@ -34,6 +38,7 @@ public:
     void addToList(QString title, QString text); //TODO: add writing to SQL in this function.
     void edit(ListItem prev, ListItem nw);
     void deleteItem(int index);
+    int getId(QString title);
 
     [[deprecated("useless, directly add-remove operations do the trick")]]
     void updateList();
@@ -45,6 +50,7 @@ public slots:
 private:
     QListWidget * makeList();
     QPushButton * makeCreateBt();
+    void loadItems();
 };
 
 

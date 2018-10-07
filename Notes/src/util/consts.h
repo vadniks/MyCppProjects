@@ -24,6 +24,16 @@
 //Exceptions:
 #define ILLEGAL_STATE_EXCEPTION   "IllegalStateException"
 
+//Database: //TODO: add password lock.
+#define DB_TYPE                   "QSQLITE"
+#define DB_NAME                   "./notes.db"
+#define DB_USER_NAME              "root"
+#define DB_HOST_NAME              "localhost"
+#define DB_PASSWORD               "password"
+#define DB_ID                     "id"
+#define DB_TITLE                  "title"
+#define DB_TEXT                   "text"
+
 //Main window:
 #define MAIN_WIN_TITLE            "Notes"
 #define MAIN_LIST_W               340
@@ -36,9 +46,9 @@
 #define CREATE_CANCEL_BUTTON_TEXT ALERT_BUTTON_CANCEL
 #define CREATE_TITLE_HINT         "Title"
 #define CREATE_TEXT_HINT          "Text"
-#define CREATE_ID_NAME            "id"
-#define CREATE_TITLE_NAME         "title"
-#define CREATE_TEXT_NAME          "text"
+#define CREATE_ID_NAME            DB_ID
+#define CREATE_TITLE_NAME         DB_TITLE
+#define CREATE_TEXT_NAME          DB_TEXT
 
 //ViewWindow:
 #define VIEW_WIN_TITLE            "Edit"

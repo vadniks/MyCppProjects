@@ -22,9 +22,13 @@ void ListInteractions::addItem(QString title, QString text)
     list->addItem(item);
 }
 
-void ListInteractions::addItems(vector<QListWidgetItem *> *items)
+void ListInteractions::addItems(vector<ListItem> items)
 {
-
+    for (auto &item : items)
+    {
+        ListItem i = (ListItem) item;
+        addItem(*i.getTitle(), *i.getText());
+    }
 }
 
 void ListInteractions::addItems(QStringList stringList)
