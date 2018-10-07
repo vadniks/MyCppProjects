@@ -15,9 +15,6 @@ public:
     explicit ListItem(int id = 0, QString title = nullptr, QString text = nullptr);
     ~ListItem();
 
-    [[deprecated("unsafe")]]
-    int getId();
-
 public:
     QString * getTitle();
     QString * getText();
@@ -26,6 +23,9 @@ public:
     void setText(QString *text);
     QDataStream * toDataStream();
     static ListItem fromDataStream(QDataStream *stream);
+
+    //[[deprecated("unsafe")]]
+    int getId();
 
 private:
     int id;

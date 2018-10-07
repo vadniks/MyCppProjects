@@ -43,10 +43,10 @@ public:
     QString getItemTitle(QListWidgetItem *item);
     int getItemCount();
     bool doubles(QString title);
-    void putData(int id, QString *title, QString *text, QListWidgetItem *item);
+    void putData(int id, QString title, QString text, QListWidgetItem *item);
     ListItem getData(QListWidgetItem *item);
     void edit(ListItem prev, ListItem nw);
-    int getItemIndex(QString *title);
+    int getItemIndex(QString title);
     void updateItems();
 
     //TODO: delete.

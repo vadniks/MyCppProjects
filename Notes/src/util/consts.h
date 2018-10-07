@@ -26,8 +26,10 @@
 
 //Database: //TODO: add password lock.
 #define DB_TYPE                   "QSQLITE"
-#define DB_NAME                   "./notes.db"
-#define DB_USER_NAME              "root"
+#define DB_FILE_NAME              "notes.db"
+#define DB_FILE_NAME_EXT          "./" + DB_FILE_NAME
+#define DB_NAME                   "notes"
+#define DB_USER_NAME              "Admin"
 #define DB_HOST_NAME              "localhost"
 #define DB_PASSWORD               "password"
 #define DB_ID                     "id"

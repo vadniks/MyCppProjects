@@ -17,7 +17,7 @@ void ListInteractions::addItem(QString title, QString text)
         throw IllegalStateException();
 
     auto *item = new QListWidgetItem(title, list);
-    putData(getItemCount()-1, &title, &text, item);
+    putData(getItemCount()-1, title, text, item);
     //item->setWhatsThis(QString::number(getItemCount()));
     list->addItem(item);
 }
@@ -38,7 +38,7 @@ void ListInteractions::addItems(QStringList stringList)
     {
         QListWidgetItem *ptr = nullptr;
         ptr = new QListWidgetItem(s, this->list);
-        putData(i, &s, &QString::asprintf("<none>"), ptr);
+        putData(i, s, QString::asprintf("<none>"), ptr);
         i++;
     }
 }
@@ -111,15 +111,15 @@ bool ListInteractions::doubles(QString title)
     return false;
 }
 
-void ListInteractions::putData(int id, QString *title, QString *text, QListWidgetItem *item)
+void ListInteractions::putData(int id, QString title, QString text, QListWidgetItem *item)
 {
 //    QTextStream out(stdout);
 //    out << id << " " << *title << " " << *text << endl;
 
     QJsonObject obj;
     obj[CREATE_ID_NAME] = id;
-    obj[CREATE_TITLE_NAME] = *title;
-    obj[CREATE_TEXT_NAME] = *text;
+    obj[CREATE_TITLE_NAME] = title;
+    obj[CREATE_TEXT_NAME] = text;
 
     QJsonDocument doc(obj);
 
@@ -158,13 +158,13 @@ void ListInteractions::edit(ListItem prev, ListItem nw)
 
     QListWidgetItem *item = getItem(prev.getId());
     item->setText(*nw.getTitle());
-    putData(prev.getId(), nw.getTitle(), nw.getText(), item);
+    putData(prev.getId(), *nw.getTitle(), *nw.getText(), item);
 }
 
-int ListInteractions::getItemIndex(QString *title)
+int ListInteractions::getItemIndex(QString title)
 {
     for (int i = 0; i < getItemCount(); i++) {
-        if (QString::compare(getItem(i)->text(), *title))
+        if (QString::compare(getItem(i)->text(), title))
             return i;
     }
     return 0;
@@ -174,7 +174,7 @@ void ListInteractions::updateItems()
 {
     for (int i = 0; i < getItemCount(); i++) {
         QListWidgetItem *item = getItem(i);
-        putData(getItemIndex(&item->text()), &item->text(), getData(item).getText(), item);
+        putData(getItemIndex(item->text()), item->text(), *getData(item).getText(), item);
     }
 }
 

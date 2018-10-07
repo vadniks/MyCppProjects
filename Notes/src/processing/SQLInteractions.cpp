@@ -4,20 +4,41 @@
 
 #include "SQLInteractions.h"
 
-SQLInteractions::SQLInteractions()
-{
-    createConnection();
-    createDB();
-}
+//SQLInteractions::SQLInteractions() = default;
+//{
+////    if (!createConnection())
+////        throw -1;
+////
+////    if (!createDB())
+////        throw -2;
+//
+//    //if (!hasCreated())
+//        createConnection();
+//    createDB();
+//}
 
 vector<ListItem> SQLInteractions::loadItems()
 {
     vector<ListItem> vector;
 
-    int count = getItemCount();
-    vector.reserve(count);
-    for (int i = 0; i < count; i++)
-        vector.push_back(getItem(i));
+    QSqlQuery query;
+    QString str = "SELECT data FROM " + QString::asprintf(DB_NAME);
+    bool s = query.exec(str);
+
+    if (!s)
+        return vector;
+
+    while (query.next())
+        vector.push_back(fromByteArray(query.value(1).toByteArray()));
+
+//    int count = getItemCount();
+
+//    if (count == 0)
+//        return vector;
+
+    //vector.reserve(count);
+//    for (int i = 0; i < count; i++)
+//        vector.push_back(getItem(i));
 
     return vector;
 }
@@ -25,19 +46,19 @@ vector<ListItem> SQLInteractions::loadItems()
 bool SQLInteractions::createConnection()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase(DB_TYPE);
-    db.setDatabaseName(DB_NAME);
-    db.setUserName(DB_HOST_NAME);
+    db.setDatabaseName(QString::asprintf("./") + QString::asprintf(DB_NAME) + QString::asprintf(".db"));
     db.setUserName(DB_USER_NAME);
+    db.setHostName(DB_HOST_NAME);
     db.setPassword(DB_PASSWORD);
 
-    this->db = db;
-    return this->db.open();
+    //this->db = db;
+    return db.open();//this->db.open();
 }
 
-bool SQLInteractions::putItem(ListItem &item)
+bool SQLInteractions::putItem(ListItem item)
 {
     QSqlQuery query;
-    QString str = "INSERT INTO " + QString::asprintf(DB_NAME) + " (id, data) VALUES(?, ?);";
+    QString str = "INSERT INTO " + QString::asprintf(DB_NAME) + " (id, data) VALUES(?, ?)";
     query.prepare(str);
     query.bindValue(0, item.getId());
     query.bindValue(1, toByteArray(item));
@@ -48,10 +69,10 @@ bool SQLInteractions::putItem(ListItem &item)
 bool SQLInteractions::createDB()
 {
     QSqlQuery query;
-    QString str = "CREATE TABLE " + QString::asprintf(DB_NAME) + " IF NOT EXISTS (" +
-                      "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL" +
+    QString str = "CREATE TABLE IF NOT EXISTS " + QString::asprintf(DB_NAME) + " (" +
+                      "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                       "data BLOB" +
-                  ");";
+                  ")";
     return query.exec(str);
 }
 
@@ -64,6 +85,8 @@ QByteArray SQLInteractions::toByteArray(ListItem &item)
     obj[DB_TITLE] = *item.getTitle();
     obj[DB_TEXT] = *item.getText();
 
+    qDebug() << *item.getTitle();
+
     QJsonDocument doc(obj);
     return doc.toJson();
 }
@@ -75,13 +98,15 @@ ListItem SQLInteractions::fromByteArray(QByteArray arr)
     QString title = obj[DB_TITLE].toString();
     QString text = obj[DB_TEXT].toString();
 
+    qDebug() << title;
+
     return ListItem(id, title, text);
 }
 
 ListItem SQLInteractions::getItem(int id)
 {
     QSqlQuery query;
-    QString str = "SELECT data FROM " + QString::asprintf(DB_NAME) + " WHERE id = ?;";
+    QString str = "SELECT data FROM " + QString::asprintf(DB_NAME) + " WHERE id = ?";
     query.prepare(str);
     query.bindValue(0, id);
     bool s = query.exec();
@@ -92,7 +117,10 @@ ListItem SQLInteractions::getItem(int id)
     QSqlRecord rec = query.record();
     QByteArray arr;
 
-    while (query.next())
+//    while (query.next())
+//        arr = query.value(rec.indexOf(DB_ID)).toByteArray();
+
+    if (query.first())
         arr = query.value(rec.indexOf(DB_ID)).toByteArray();
 
     return fromByteArray(arr);
@@ -101,7 +129,7 @@ ListItem SQLInteractions::getItem(int id)
 bool SQLInteractions::updateItem(int id, ListItem nw)
 {
     QSqlQuery query;
-    QString str = "UPDATE " + QString::asprintf(DB_NAME) + " SET data = ? WHERE id = ?;";
+    QString str = "UPDATE " + QString::asprintf(DB_NAME) + " SET data = ? WHERE id = ?";
     query.prepare(str);
     query.bindValue(0, toByteArray(nw));
     query.bindValue(1, id);
@@ -111,7 +139,7 @@ bool SQLInteractions::updateItem(int id, ListItem nw)
 int SQLInteractions::getItemCount()
 {
     QSqlQuery query;
-    QString str = "SELECT * FROM " + QString::asprintf(DB_NAME) + ";";
+    QString str = "SELECT * FROM " + QString::asprintf(DB_NAME);
     bool s = query.exec(str);
 
     if (!s)
@@ -124,8 +152,33 @@ int SQLInteractions::getItemCount()
     return count;
 }
 
-SQLInteractions::~SQLInteractions()
+bool SQLInteractions::deleteItem(int id)
 {
-    this->db.close();
-    delete this;
+    QSqlQuery query;
+    QString str = "DELETE FROM " + QString::asprintf(DB_NAME) + " WHERE id = ?";
+    query.prepare(str);
+    query.bindValue(0, id);
+
+    return query.exec();
 }
+
+bool SQLInteractions::hasCreated()
+{
+    if (FILE *file = fopen(DB_FILE_NAME, "r"))
+    {
+        fclose(file);
+        return true;
+    }
+    return false;
+}
+
+void SQLInteractions::init()
+{
+    createConnection();
+    createDB();
+}
+
+//SQLInteractions::~SQLInteractions() = default;
+//{
+//    this->db.close();
+//}

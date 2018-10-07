@@ -1,3 +1,5 @@
+#include <utility>
+
 /*************************************************
  **  Created by Vad Nik on 24-Sep-18.
  *************************************************/
@@ -53,8 +55,12 @@ QListWidget * MainWindow::makeList()
 //    QStringList sList;
 //    sList << "Item 1" << "Item 2";
 
+    //sInters = SQLInteractions();
+    SQLInteractions::init();
+
     auto *inters = new ListInteractions(list);
-    inters->addItems(SQLInteractions().loadItems());
+    //inters->addItems(sInters.loadItems());
+    inters->addItems(SQLInteractions::loadItems());
     this->inters = inters;
 
     QObject::connect(list, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(onItemClicked(QListWidgetItem *)));
@@ -89,16 +95,22 @@ void MainWindow::updateList()
 
 void MainWindow::addToList(QString title, QString text)
 {
+    SQLInteractions::putItem(ListItem(inters->getItemCount(), title, text));
+    //sInters.putItem(ListItem(inters->getItemCount(), title, text));
     inters->addItem(std::move(title), std::move(text));
 }
 
 void MainWindow::edit(ListItem prev, ListItem nw)
 {
+    SQLInteractions::updateItem(prev.getId(), nw);
+    //sInters.updateItem(prev.getId(), nw);
     inters->edit(prev, nw);
 }
 
 void MainWindow::deleteItem(int index)
 {
+    SQLInteractions::deleteItem(index);
+    //sInters.deleteItem(index);
     inters->removeItem(index);
 }
 
@@ -109,5 +121,5 @@ void MainWindow::loadItems()
 
 int MainWindow::getId(QString title)
 {
-    return inters->getItemIndex(&title);
+    return inters->getItemIndex(std::move(title));
 }

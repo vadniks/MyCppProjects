@@ -28,6 +28,7 @@ class MainWindow: public QMainWindow
 
 private:
     ListInteractions *inters;
+    //SQLInteractions sInters;
 
 public:
     MainWindow();
