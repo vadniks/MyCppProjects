@@ -27,8 +27,8 @@ using namespace std;
 class SQLInteractions
 {
 
-//private:
-//    QSqlDatabase db;
+private:
+    static QSqlDatabase db;
 
 //public:
 //    SQLInteractions();
