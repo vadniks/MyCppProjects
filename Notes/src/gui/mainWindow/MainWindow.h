@@ -12,6 +12,7 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QDebug>
 #include <utility>
 #include <vector>
 #include "processing/ListInteractions.h"
@@ -35,11 +36,22 @@ public:
     ~MainWindow() override;
 
 public:
+    void closeEvent(QCloseEvent *event) override;
+
+public:
     void Execute();
     void addToList(QString title, QString text); //TODO: add writing to SQL in this function.
     void edit(ListItem prev, ListItem nw);
     void deleteItem(int index);
+
+    [[deprecated]]
     int getId(QString title);
+    [[deprecated]]
+    ListItem getItemFromList(int id);
+    [[deprecated]]
+    vector<ListItem> getItemsFromList();
+    [[deprecated]]
+    void updateItem(int id, ListItem item);
 
     [[deprecated("useless, directly add-remove operations do the trick")]]
     void updateList();

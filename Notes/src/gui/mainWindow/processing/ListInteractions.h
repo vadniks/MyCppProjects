@@ -14,9 +14,11 @@
 #include <QJsonDocument>
 #include <QByteArray>
 #include <QTextStream>
+#include <QDebug>
 #include "../../../util/consts.h"
 #include "../../../util/IllegalStateException.h"
 #include "../../../util/ListItem.h"
+#include "../../../processing/SQLInteractions.h"
 
 using namespace std;
 
@@ -48,6 +50,11 @@ public:
     void edit(ListItem prev, ListItem nw);
     int getItemIndex(QString title);
     void updateItems();
+    vector<ListItem> getItems();
+    QString getItemTitle(int index);
+    void reloadItems();
+    void removeFromList(int index);
+    void uploadItems();
 
     //TODO: delete.
     [[deprecated("only for testing")]]

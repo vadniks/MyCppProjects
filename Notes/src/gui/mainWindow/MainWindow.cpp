@@ -1,9 +1,8 @@
-#include <utility>
-
 /*************************************************
  **  Created by Vad Nik on 24-Sep-18.
  *************************************************/
 
+#include <utility>
 #include "MainWindow.h"
 
 MainWindow::MainWindow() = default;
@@ -90,26 +89,30 @@ void MainWindow::onCreateClicked()
 
 void MainWindow::updateList()
 {
-
+    //TODO: delete his.
 }
 
 void MainWindow::addToList(QString title, QString text)
 {
-    SQLInteractions::putItem(ListItem(inters->getItemCount(), title, text));
     //sInters.putItem(ListItem(inters->getItemCount(), title, text));
-    inters->addItem(std::move(title), std::move(text));
+    //inters->addItem(std::move(title), std::move(text));
+    inters->addItem(title, text);
+    //SQLInteractions::putItem(ListItem(inters->getItemCount(), title, text));
 }
 
 void MainWindow::edit(ListItem prev, ListItem nw)
 {
-    SQLInteractions::updateItem(prev.getId(), nw);
     //sInters.updateItem(prev.getId(), nw);
     inters->edit(prev, nw);
+    //SQLInteractions::updateItem(prev.getId(), nw);
 }
 
 void MainWindow::deleteItem(int index)
 {
-    SQLInteractions::deleteItem(index);
+    //qDebug() << index;
+
+    //SQLInteractions::deleteItem(index);
+    //SQLInteractions::updateAll();
     //sInters.deleteItem(index);
     inters->removeItem(index);
 }
@@ -122,4 +125,25 @@ void MainWindow::loadItems()
 int MainWindow::getId(QString title)
 {
     return inters->getItemIndex(std::move(title));
+}
+
+ListItem MainWindow::getItemFromList(int id)
+{
+    return inters->getData(inters->getItem(id));
+}
+
+vector<ListItem> MainWindow::getItemsFromList()
+{
+    return inters->getItems();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    //SQLInteractions::deloadItems(getItemsFromList());
+    event->accept();
+}
+
+void MainWindow::updateItem(int id, ListItem item)
+{
+    //SQLInteractions::updateItem(id, item);
 }

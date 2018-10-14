@@ -25,19 +25,22 @@ vector<ListItem> SQLInteractions::loadItems()
     vector<ListItem> vector;
 
     QSqlQuery query(SQLInteractions::db);
-    QString str = "SELECT data FROM " + QString::asprintf(DB_NAME);
+    QString str = "SELECT id, title, text FROM " + QString::asprintf(DB_NAME);
     bool s = query.exec(str);
-
-    SQLInteractions::db.close();
 
     if (!s)
         return vector;
 
     QSqlRecord rec = query.record();
 
-    while (query.next())
-        vector.push_back(fromByteArray(query.value(rec.indexOf("data")).toByteArray()));
+    while (query.next()) {
+        //qDebug() << " id " << query.value(rec.indexOf("id")).toInt();
+        //vector.push_back(fromByteArray(query.value(rec.indexOf("data")).toByteArray()));
+        vector.push_back(ListItem(query.value(rec.indexOf("id")).toInt(), query.value(rec.indexOf("title")).toString(),
+                                  query.value(rec.indexOf("text")).toString()));
+    }
 
+    SQLInteractions::db.close();
 //    int count = getItemCount();
 
 //    if (count == 0)
@@ -69,10 +72,12 @@ bool SQLInteractions::putItem(ListItem item)
         SQLInteractions::db.open();
 
     QSqlQuery query(SQLInteractions::db);
-    QString str = "INSERT INTO " + QString::asprintf(DB_NAME) + " (id, data) VALUES(?, ?)";
+    QString str = "INSERT INTO " + QString::asprintf(DB_NAME) + " (id, title, text) VALUES(?, ?, ?)";
     query.prepare(str);
     query.addBindValue(item.getId());
-    query.addBindValue(toByteArray(item), QSql::In | QSql::Binary);
+    query.addBindValue(*item.getTitle());
+    query.addBindValue(*item.getText());
+    //query.addBindValue(toByteArray(item), QSql::In | QSql::Binary);
 
     bool s = query.exec();
 
@@ -89,7 +94,8 @@ bool SQLInteractions::createDB()
     QSqlQuery query(SQLInteractions::db);
     QString str = "CREATE TABLE IF NOT EXISTS " + QString::asprintf(DB_NAME) + " (" +
                       "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                      "data BLOB NOT NULL" +
+                      "title VARCHAR NOT NULL," +
+                      "text VARCHAR NOT NULL" +
                   ")";
 
     bool s = query.exec(str);
@@ -124,15 +130,15 @@ ListItem SQLInteractions::fromByteArray(QByteArray arr)
     return ListItem(id, title, text);
 }
 
-ListItem SQLInteractions::getItem(int id)
+ListItem SQLInteractions::getItem(QString title)
 {
     if (!SQLInteractions::db.isOpen())
         SQLInteractions::db.open();
 
     QSqlQuery query(SQLInteractions::db);
-    QString str = "SELECT data FROM " + QString::asprintf(DB_NAME) + " WHERE id = ?";
+    QString str = "SELECT id, title, text FROM " + QString::asprintf(DB_NAME) + " WHERE title = ?";
     query.prepare(str);
-    query.addBindValue(id);
+    query.addBindValue(title);
     bool s = query.exec();
 
     SQLInteractions::db.close();
@@ -141,27 +147,34 @@ ListItem SQLInteractions::getItem(int id)
         return ListItem();
 
     QSqlRecord rec = query.record();
-    QByteArray arr;
+    //QByteArray arr;
 
 //    while (query.next())
 //        arr = query.value(rec.indexOf(DB_ID)).toByteArray();
 
-    if (query.first())
-        arr = query.value(rec.indexOf("data")).toByteArray();
+    ListItem item;
 
-    return fromByteArray(arr);
+    if (query.first())
+        //arr = query.value(rec.indexOf("data")).toByteArray();
+        item = ListItem(query.value(rec.indexOf("id")).toInt(), query.value(rec.indexOf("title")).toString(),
+                query.value(rec.indexOf("text")).toString());
+
+    return item; //fromByteArray(arr);
 }
 
-bool SQLInteractions::updateItem(int id, ListItem nw)
+bool SQLInteractions::updateItem(QString title, ListItem nw)
 {
     if (!SQLInteractions::db.isOpen())
         SQLInteractions::db.open();
 
     QSqlQuery query(SQLInteractions::db);
-    QString str = "UPDATE " + QString::asprintf(DB_NAME) + " SET data = ? WHERE id = ?";
+    QString str = "UPDATE " + QString::asprintf(DB_NAME) + " SET id = ?, title = ?, text = ? WHERE title = ?";
     query.prepare(str);
-    query.addBindValue(toByteArray(nw), QSql::In | QSql::Binary);
-    query.addBindValue(id);
+    //query.addBindValue(toByteArray(nw), QSql::In | QSql::Binary);
+    query.addBindValue(nw.getId());
+    query.addBindValue(*nw.getTitle());
+    query.addBindValue(*nw.getText());
+    query.addBindValue(title);
 
     bool s = query.exec();
     SQLInteractions::db.close();
@@ -189,15 +202,15 @@ int SQLInteractions::getItemCount()
     return count;
 }
 
-bool SQLInteractions::deleteItem(int id)
+bool SQLInteractions::deleteItem(QString title)
 {
     if (!SQLInteractions::db.isOpen())
         SQLInteractions::db.open();
 
     QSqlQuery query(SQLInteractions::db);
-    QString str = "DELETE FROM " + QString::asprintf(DB_NAME) + " WHERE id = ?";
+    QString str = "DELETE FROM " + QString::asprintf(DB_NAME) + " WHERE title = ?";
     query.prepare(str);
-    query.addBindValue(id);
+    query.addBindValue(title);
 
     bool s = query.exec();
     SQLInteractions::db.close();
@@ -218,6 +231,62 @@ void SQLInteractions::init()
 {
     createConnection();
     createDB();
+}
+
+bool SQLInteractions::updateItemId(int prev, int nw)
+{
+    if (!SQLInteractions::db.isOpen())
+        SQLInteractions::db.open();
+
+    QSqlQuery query(SQLInteractions::db);
+    QString str = "UPDATE " + QString::asprintf(DB_NAME) + " SET id = ? WHERE id = ?";
+    query.prepare(str);
+    query.addBindValue(nw);
+    query.addBindValue(prev);
+
+    bool s = query.exec();
+    SQLInteractions::db.close();
+    return s;
+}
+
+void SQLInteractions::updateAll()
+{
+//    for (int i = 0; i < getItemCount(); i++) {
+//        ListItem item = getItem(i);
+//        int id = getItemIndex(*item.getTitle());
+//        updateItem(id, item);
+//        updateItemId(id, i);
+//    }
+
+    //qDebug() << " idx " << getItemIndex("b");
+}
+
+int SQLInteractions::getItemIndex(QString title)
+{
+    for (const auto &i : loadItems()) {
+        if (QString::compare(*((ListItem) i).getTitle(), title))
+            return ((ListItem) i).getId();
+    }
+    return 0;
+}
+
+void SQLInteractions::deloadItems(vector<ListItem> items)
+{
+    deleteAll();
+    for (auto &i : items)
+        putItem((ListItem) i);
+}
+
+void SQLInteractions::deleteAll()
+{
+    if (!SQLInteractions::db.isOpen())
+        SQLInteractions::db.open();
+
+    QSqlQuery query(SQLInteractions::db);
+    QString str = "DELETE FROM " + QString::asprintf(DB_NAME);
+
+    query.exec(str);
+    SQLInteractions::db.close();
 }
 
 //SQLInteractions::~SQLInteractions() = default;

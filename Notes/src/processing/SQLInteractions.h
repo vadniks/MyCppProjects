@@ -38,16 +38,29 @@ public:
     static void init();
     static vector<ListItem> loadItems();
     static bool putItem(ListItem item);
-    static ListItem getItem(int id);
-    static bool updateItem(int id, ListItem nw);
+    static ListItem getItem(QString title);
     static int getItemCount();
-    static bool deleteItem(int id);
+    static bool deleteItem(QString title);
+    static int getItemIndex(QString title);
+    static void deleteAll();
+    static bool updateItem(QString title, ListItem nw);
+
+    [[deprecated]]
+    static bool updateItemId(int prev, int nw);
+    [[deprecated]]
+    static void updateAll();
+    [[deprecated]]
+    static void deloadItems(vector<ListItem> items);
 
 private:
     static bool createConnection();
     static bool createDB();
+
+    [[deprecated]]
     static QByteArray toByteArray(ListItem &item);
+    [[deprecated]]
     static ListItem fromByteArray(QByteArray arr);
+    [[deprecated]]
     static bool hasCreated();
 };
 

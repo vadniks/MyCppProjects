@@ -17,9 +17,12 @@ void ListInteractions::addItem(QString title, QString text)
         throw IllegalStateException();
 
     auto *item = new QListWidgetItem(title, list);
-    putData(getItemCount()-1, title, text, item);
+    int id = getItemCount()-1;
+    putData(id, title, text, item);
     //item->setWhatsThis(QString::number(getItemCount()));
     list->addItem(item);
+
+    SQLInteractions::putItem(ListItem(id, title, title));
 }
 
 void ListInteractions::addItems(vector<ListItem> items)
@@ -55,15 +58,18 @@ void ListInteractions::removeItem(int index)
 //    QTextStream out(stdout);
 //    out << QString::number(index) << " " << QString::number(getItemCount()) << endl;
 
-    delete getItem(index);
+    qDebug() << index << getItemTitle(index);
 
+    SQLInteractions::deleteItem(getItemTitle(index));
+    removeFromList(index);
     updateItems();
+    //reloadItems();
 }
 
 void ListInteractions::deleteAll()
 {
     for (int i = 0; i < getItemCount(); i++)
-        removeItem(i);
+        removeFromList(i);
 }
 
 bool ListInteractions::isEmpty()
@@ -159,13 +165,17 @@ void ListInteractions::edit(ListItem prev, ListItem nw)
     QListWidgetItem *item = getItem(prev.getId());
     item->setText(*nw.getTitle());
     putData(prev.getId(), *nw.getTitle(), *nw.getText(), item);
+
+    SQLInteractions::updateItem(*prev.getTitle(), nw);
 }
 
 int ListInteractions::getItemIndex(QString title)
 {
     for (int i = 0; i < getItemCount(); i++) {
-        if (QString::compare(getItem(i)->text(), title))
+        if (!QString::compare(getItem(i)->text(), title, Qt::CaseInsensitive)) {
+            qDebug() << "t";
             return i;
+        }
     }
     return 0;
 }
@@ -174,8 +184,44 @@ void ListInteractions::updateItems()
 {
     for (int i = 0; i < getItemCount(); i++) {
         QListWidgetItem *item = getItem(i);
-        putData(getItemIndex(item->text()), item->text(), *getData(item).getText(), item);
+        int id = getItemIndex(item->text());
+        putData(id, item->text(), *getData(item).getText(), item);
+        //SQLInteractions::updateItem(id, getData(item));
+        //SQLInteractions::updateItemId(i, id);
+
+        //qDebug() << " a " << i << " " << id;
     }
+}
+
+vector<ListItem> ListInteractions::getItems()
+{
+    vector<ListItem> vector;
+
+    for (int i = 0; i < getItemCount(); i++)
+        vector.push_back(getData(getItem(i)));
+
+    return vector;
+}
+
+QString ListInteractions::getItemTitle(int index)
+{
+    return *getData(getItem(index)).getTitle();
+}
+
+void ListInteractions::reloadItems()
+{
+    deleteAll();
+    uploadItems();
+}
+
+void ListInteractions::removeFromList(int index)
+{
+    delete getItem(index);
+}
+
+void ListInteractions::uploadItems()
+{
+    addItems(SQLInteractions::loadItems());
 }
 
 ListInteractions::~ListInteractions() = default;
