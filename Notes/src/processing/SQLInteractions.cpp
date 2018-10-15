@@ -68,6 +68,8 @@ bool SQLInteractions::createConnection()
 
 bool SQLInteractions::putItem(ListItem item)
 {
+    qDebug() << *item.getTitle() << " - " << *item.getText();
+
     if (!SQLInteractions::db.isOpen())
         SQLInteractions::db.open();
 

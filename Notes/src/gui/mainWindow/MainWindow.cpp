@@ -1,3 +1,5 @@
+#include <utility>
+
 /*************************************************
  **  Created by Vad Nik on 24-Sep-18.
  *************************************************/
@@ -94,9 +96,11 @@ void MainWindow::updateList()
 
 void MainWindow::addToList(QString title, QString text)
 {
+    //qDebug() << title << " - " << text;
+
     //sInters.putItem(ListItem(inters->getItemCount(), title, text));
     //inters->addItem(std::move(title), std::move(text));
-    inters->addItem(title, text);
+    inters->addItem(std::move(title), std::move(text));
     //SQLInteractions::putItem(ListItem(inters->getItemCount(), title, text));
 }
 

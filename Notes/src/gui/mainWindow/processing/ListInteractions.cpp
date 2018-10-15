@@ -22,7 +22,7 @@ void ListInteractions::addItem(QString title, QString text)
     //item->setWhatsThis(QString::number(getItemCount()));
     list->addItem(item);
 
-    SQLInteractions::putItem(ListItem(id, title, title));
+    SQLInteractions::putItem(ListItem(id, title, text));
 }
 
 void ListInteractions::addItems(vector<ListItem> items)
