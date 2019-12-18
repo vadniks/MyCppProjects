@@ -82,6 +82,7 @@ str decrypt(str msg, str key)
     int i;
     for (i = 0; i < msgLen; i++)
         dec[i] = CHARS[((getId(msg[i]) - getId(key[i])) + charsLen) % charsLen];
+    dec[i] = '\0';
 
     return dec;
 }
