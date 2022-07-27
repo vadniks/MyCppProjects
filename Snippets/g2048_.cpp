@@ -1,4 +1,7 @@
-
+/*
+Console version of the 2048 game.
+Designed specially for GNU/Linux terminal.
+*/
 
 #include <cstdlib>
 #include <ctime>
@@ -84,8 +87,6 @@ private:
                 genBasicSmWhr();
             else
                 moveTreat();
-
-            //move = -1;
         }
     }
 
@@ -122,12 +123,7 @@ private:
     void treatUp(int i, int j, int sum, int elem) {
         int nextElemY = i - 1;
         bool hasSummed = false;
-
-//        cout << '_' << i << ' ' << j << ' ' << sum << ' ' << elem << nl;
-
         while (nextElemY > -1) {
-//            cout << "__" << nextElemY << ' ' << elems[nextElemY][j] << nl;
-
             int elAftMv = elems_aft_mv[nextElemY][j];
             if (elems[nextElemY][j] == elem && (elAftMv == elem || elAftMv == elem_empty)) {
                 sum += elem;
@@ -163,11 +159,7 @@ private:
         int nextElemY = i + 1;
         bool hasSummed = false;
 
-//        cout << '_' << i << ' ' << j << ' ' << sum << ' ' << elem << nl;
-
         while (nextElemY < elems_sz) {
-//            cout << "__" << nextElemY << ' ' << elems[nextElemY][j] << nl;
-
             int elAftMv = elems_aft_mv[nextElemY][j];
             if (elems[nextElemY][j] == elem && (elAftMv == elem || elAftMv == elem_empty)) {
                 sum += elem;
@@ -203,11 +195,7 @@ private:
         int nextElemX = j - 1;
         bool hasSummed = false;
 
-//        cout << '_' << i << ' ' << j << ' ' << sum << ' ' << elem << nl;
-
         while (nextElemX > -1) {
-//            cout << "__" << nextElemX << ' ' << elems[i][nextElemX] << nl;
-
             int elAftMv = elems_aft_mv[i][nextElemX];
             if (elems[i][nextElemX] == elem && (elAftMv == elem || elAftMv == elem_empty)) {
                 sum += elem;
@@ -242,12 +230,7 @@ private:
     void treatRt(int i, int j, int sum, int elem) {
         int nextElemX = j + 1;
         bool hasSummed = false;
-
-//        cout << '_' << i << ' ' << j << ' ' << sum << ' ' << elem << nl;
-
         while (nextElemX < elems_sz) {
-//            cout << "__" << nextElemX << ' ' << elems[i][nextElemX] << nl;
-
             int elAftMv = elems_aft_mv[i][nextElemX];
             if (elems[i][nextElemX] == elem && (elAftMv == elem || elAftMv == elem_empty)) {
                 sum += elem;
@@ -280,8 +263,6 @@ private:
         int newElemX = rand() % elems_sz;
         int newElemY = rand() % elems_sz;
 
-//        cout << '_' << newElemY << ' ' << newElemX << '|';
-
         FORI2(lastY, elems_sz, i, lastX, elems_sz, j) {
             if (i == newElemY && j == newElemX) {
                 if (elems[i][j] == elem_empty)
@@ -296,7 +277,7 @@ private:
     }
 
     void drawFrame() {
-        //cout << "\033[H\033[J";
+        cout << "\033[H\033[J";
 
         int map_x = num_elem_sz * elems_sz + 2 + 4;
 
@@ -317,12 +298,10 @@ private:
                 char *buf = new char[num_elem_sz];
                 sprintf(buf, "%d", elem);
 
-//                FORI(0, strlen(buf), k) {
                     if (elem != 0)
                         cout << "\033[32;1;1m" << buf << "\033[0m";
                     else
                         cout << buf;
-//                }
 
                 pc(sc);
             }

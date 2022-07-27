@@ -1,21 +1,42 @@
-
-// variant 3
+/*                                    
+                       .x~~"*Weu.   
+     ...     ..       d8Nu.  9888c  
+  :~""888h.:^"888:    88888  98888  
+ 8X   `8888X  8888>   "***"  9888%  
+X888n. 8888X  ?888>        ..@8*"   
+'88888 8888X   ?**h.    ````"8Weu   
+  `*88 8888~ x88x.     ..    ?8888L 
+ ..<"  88*`  88888X  :@88N   '8888N 
+    ..XC.    `*8888k *8888~  '8888F 
+  :888888H.    `%88> '*8"`   9888%  
+ <  `"888888:    X"    `~===*%"`    
+       %888888x.-`                  
+         ""**""                     
+      ::::::::   ::::::::   :::::::: 
+    :+:    :+: :+:    :+: :+:    :+: 
+   +:+        +:+        +:+         
+  :#:        +#+        +#+          
+ +#+   +#+# +#+        +#+           
+#+#    #+# #+#    #+# #+#    #+#     
+########   ########   ########       
+*/
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <chrono>
 
 #define _nn [[gnu::nonnull]]
 #define _nl _Nullable
 #define _nd [[nodiscard]]
 #define _th noexcept(0)
 #define _pr [[gnu::pure]]
+#define _du [[deprecated, gnu::unused]]
 
 #define _sch(x)     \
     class x final { \
     private:        \
         x() {}      \
-        ~x() {}     \
     public:
 
 typedef char* ss;
@@ -25,12 +46,18 @@ typedef int* inp;
 
 ///////////////////////////////
 
+long cm = 0;
+
+#define _cm(_x, y...) [y]() { cm++; return _x; }()
+
+///////////////////////////////
+
 static ci 
-        ssn = 10, 
-        sbf = 10, 
-        stf = 64, 
-        sc  = sizeof(char),
-        spp = sizeof(ss);
+    ssn = 10, 
+    sbf = 10, 
+    stf = 64, 
+    sc  = sizeof(char),
+    spp = sizeof(ss);
 
 ///////////////////////////////
 
@@ -75,7 +102,7 @@ public:
             b = st[i];
             j = strlen(b);
 
-            if (b[0] != b[j-1]) continue;
+            if (_cm(b[0] != b[j-1], b, j)) continue;
 
             if (!a) 
                 a = b;
@@ -110,9 +137,9 @@ _sch(kmp)
 
         int i = 0, j = 0;
         while (i < n) {
-            if (p[j] == t[i])
+            if (_cm(p[j] == t[i], p, t, i, j))
             { j++; i++; }
-    
+
             if (j == m) {
                 rs = (inp) realloc(rs, 
                    (rsz + 1) * sizeof(int));
@@ -121,7 +148,7 @@ _sch(kmp)
                 rsz++;
 
                 j = lps[j - 1];
-            } else if (i < n and p[j] != t[i]) {
+            } else if (i < n and _cm(p[j] != t[i], p, t, i, j)) {
                 if (j != 0)
                     j = lps[j - 1];
                 else
@@ -140,7 +167,7 @@ _sch(kmp)
 
         int i = 1;
         while (i < m) {
-            if (p[i] == p[l]) {
+            if (_cm(p[i] == p[l], p, i, l)) {
                 l++;
                 lps[i] = l;
                 i++;
@@ -278,13 +305,13 @@ public:
         aa(a), br(b), bs(bb.ln())
     {}
 
-    _pr _nd bool cnt(ss* _nl a = 0)
+    _du _pr _nd bool cnt(ss* _nl a = 0)
     { return a ? (*a = mmw()) : mmw(); }
 
-    _pr _nd static float prs(_nn ss a, _nn ss b) 
+    _du _pr _nd static float prs(_nn ss a, _nn ss b) 
     { return hdst(a, b) / strlen(a); }
 
-    _pr _nd static bool mtc(_nn ss a, _nn ss b)
+    _du _pr _nd static bool mtc(_nn ss a, _nn ss b)
     { return prs(a, b) >= 0.5f; }
 
     _pr _nd ss _nl mmw() {
@@ -293,6 +320,7 @@ public:
         if (!b) return 0;
 
         int f = strlen(aa), e = 0, h = 0;
+        
         for (int i = 0, c = 0, d = 0; i < a; i++) {
             ss g = b[i]; h = strlen(g);
 
@@ -300,10 +328,9 @@ public:
             
             if (c < d or !i) {
                 d = c;
-                e = c != f+1 and c ? i : -1; //br->src(g);
+                e = c != f+1 and c ? i : -1;
             }
         }
-        //printf("0 | %s %d %d\n", aa, f, e);
         return e != -1 ? b[e] : 0;
     }
 
@@ -317,7 +344,7 @@ public:
     _pr _nd static bool ilt(char a) {
         bool c = 0;
         for (char b = 'a'; b < 'z'; b++)
-            c |= a == b;
+            c |= _cm(a == b, a, b);
         return c;
     }
 
@@ -326,14 +353,13 @@ public:
         int c = 0, d = 0;
         
         for (; d < strlen(a); d++) {
-            if (a[d] != b[d])
+            if (_cm(a[d] != b[d], a, b, d))
                 c++;
         }
         return c;
     }
 
-    [[deprecated, gnu::unused]]
-    _pr _nd static int ldst(_nn ss a, _nn ss b) {
+    _du _pr _nd static int ldst(_nn ss a, _nn ss b) {
         unsigned 
             i = 1, 
             j = 1, 
@@ -359,7 +385,7 @@ public:
         return m[l][k];
     }
 
-    _pr _nd static int mn(int a, int b, int c) _th
+    _du _pr _nd static int mn(int a, int b, int c) _th
     { return 
         a <= b and a <= c ? a : 
             b <= a and b <= c ? b : 
@@ -375,7 +401,7 @@ class trt {
 private:
     ss* aa = 0;
     static const int cc = 2;
-    inp* bb;
+    inp* bb = 0;
     ss dd = 0;
     int ee = 0;
     br* ff = 0;
@@ -388,6 +414,7 @@ public:
 
         int b = strlen(a), c = 0, f = 0, g = 0, h = 0, l = 0;
         char d = 0; ss e = 0;
+        bool m = 0;
         
         for (; c <= b; c++) {
             d = a[c], l = a[!c ? 0 : c-1];
@@ -398,6 +425,7 @@ public:
                 d == '\0' or
                 c == b
             ) {
+                m = 1;
                 if (
                     l == ' ' or 
                     l == '\n' or 
@@ -412,8 +440,6 @@ public:
                     j[k] = e[k];
                 j[f] = '\0';
 
-                f = 0;
-
                 aa = (ss*) 
                     realloc(aa, (g + 1) * spp);
                 aa[g] = j;
@@ -421,17 +447,19 @@ public:
 
                 free(e);
                 e = 0;
+                f = 0;
 
                 bb = (inp*) 
                     realloc(bb, g * sizeof(inp));
                 inp i = new int[2];
-                i[0] = h; i[1] = c;
+                i[0] = h; i[1] = c-1;
                 bb[g-1] = i;
 
-                h = c;
-
+                h = c+1;
                 ee = g;
             } else {
+                if (m) h = c;
+                m = 0;
                 e = (ss) 
                     realloc(e, (f + 1) * sc);
                 e[f] = d;
@@ -451,15 +479,10 @@ public:
             d = bb[a];
 
             f = apr(c, ff).mmw();
-            printf("7 | %s %d |%s| %d\n", c, d == 0, f, f == 0);
             if (!f) continue;
 
-            printf(" %d %d\n", d[0], d[1]);
-
-            for (b = d[0], e = 0; b < d[1]; b++, e++) {
-                printf("   %d %d\n", b, e);
+            for (b = d[0], e = 0; b <= d[1]; b++, e++)
                 dd[b] = f[e];
-            }
         }
     }
 };
@@ -467,8 +490,6 @@ public:
 ///////////////////////////////
 
 _sch(ts)
-
-#   define sss(x) tss(#x)
 
     _nd _nn static ss tss(_nn cs a) {
         int b = strlen(a);
@@ -483,47 +504,100 @@ _sch(ts)
 
     static void on() {
         cl::nt("aa abcde edcba abcda ebcde" 
-            "rock 0x0 0x12345 0x99990 0b111111");
-        printf("%s\n", cl::fn());
+            "rock 0x0 0x12345 0x99998 0b111111");
+        printf("on: %s\n", cl::fn());
     }
 
     static void tw() 
-    { printf("%d\n", kmp::lst(
-        (ss) "ABABDABACDABABCABABABABCCAACDCDABABCABAB", 
-        (ss) "ABABCABAB")); }
+    { printf("tw: %d\n", kmp::lst(
+        tss("ABABDABACDABABCABABABABCCAACDCDABABCABAQB"), 
+        tss("ABABCABABW"))); }
 
     static void th() {
         br* br = new class br();
 
         ci b = 12;
         cs a[b] = {
-            "short",   // 0
-            "int",     // 1
-            "char",    // 2
-            "long",    // 3
-            "unsigned",// 4
-            "void",    // 5
-            "return",  // 6
-            "if",      // 7
-            "else",    // 8
-            "switch",  // 9
-            "while",   // 10
-            "for"      // 11
+            "short",    // 0
+            "int",      // 1
+            "char",     // 2
+            "long",     // 3
+            "unsigned", // 4
+            "void",     // 5
+            "return",   // 6
+            "if",       // 7
+            "else",     // 8
+            "switch",   // 9
+            "while",    // 10
+            "for"       // 11
         };
 
         for (int i = 0; i < b; i++)
             br->dd(tss(a[i]));
 
-        ss c = tss(
-            "vold { anslgmed lf () iong swlts retunr short } ");
+        ss c = tss(R"(
+    // comment
+    volt someFunction() { 
+        anslgmed someVar; 
+        lf () {
+            ionj swltsn = 0;
+            jnd a = someOtherFunction();
+
+            ancignet ionk lang sleeplessNights = 0L;
+            wnlie (isNight) {
+                lf (doIWannaEat())
+                    goNEat();
+
+                if (doIWannaSleep())
+                { /* ingnore */ }
+
+                iv (gotSmthToDo())
+                    doThatStuff();
+                eise
+                    writeCode();
+
+                sleeplessNights++;
+            }
+        } 
+        retunr short;
+    } 
+
+    // preprocessor
+    #include "someOtherStuff" 
+            )");
+
         trt tr(c, br);
-        printf("%s\n", c);
+        printf("th: %s\n", c);
+    }
+
+    static void drt(_nn void (*a)(void)) {
+        using namespace std;
+
+        using std::chrono::high_resolution_clock;
+        using std::chrono::duration_cast;
+        using std::chrono::duration;    
+        using std::chrono::milliseconds;
+
+        auto t1 = high_resolution_clock::now();
+        a();
+        auto t2 = high_resolution_clock::now();
+
+        duration<double, std::milli> b = t2 - t1;
+        printf("\n%g\n\n",  b.count());
     }
 };
 
 int main() {
-    //ts::on();
-    //ts::tw();
-    ts::th();
+    /*ts::drt(&ts::on);
+    printf("cm: %ld\n", cm);
+    cm = 0;
+    
+    ts::drt(&ts::tw);
+    printf("cm: %ld\n", cm);
+    cm = 0;*/
+    
+    ts::drt(&ts::th);
+    printf("cm: %ld\n", cm);
+    cm = 0;
     return 0;
 }
