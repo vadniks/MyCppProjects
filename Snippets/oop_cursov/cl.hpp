@@ -3,7 +3,7 @@
 
 /* base class */
 
-// just not to mess up with the realloc
+// just not to mess with the realloc
 #include <vector>
 
 #include "dcls.hpp"
